@@ -9,12 +9,12 @@ var c = 0;
 
 var longitudArray = [];
 var latitudArray = [];
-var distrito = "";
+var distrito = [];
 
 
 async function readable() {
 
-    const response = await fetch('a.csv');
+    const response = await fetch('poblaciones.csv');
     const data = await response.text();
     const rows = data.split('\n').slice(1);
     rows.forEach(elt => {
@@ -31,17 +31,10 @@ async function readable() {
 
         longitudArray.push(longitudInt);
         latitudArray.push(latitudInt);
-        console.log(_distrito);
-        distrito = _distrito;
-
-
-
-
+        distrito.push(distr);
+        totalCiudades = longitudArray.length;
 
     })
-    console.log("sdasder");
-    totalCiudades = longitudArray.length;
-
 }
 
 
@@ -52,37 +45,22 @@ async function setup() {
 
     await readable();
 
-
+    var a = 0;
     createCanvas(800, 800);
-    // NOTE asignando ciudades
-    /* var pedregalBajo = createVector(-4.882495, -80.385018);
-     var narihuala = createVector(-5.291134, -80.687515);
-     var sacobsa = createVector(-4.582495, -81.193093);
-     var bellavista = createVector(-5.44035, -80.754966);
-
-     ciudades[0] = pedregalBajo;
-     ciudades[1] = narihuala;
-     ciudades[2] = sacobsa;
-     ciudades[3] = bellavista;*/
-    for (var i = 0; i < totalCiudades; i++) {
-        ciudades[i] = createVector(longitudArray[i], latitudArray[i]);
-    }
-
-
-
-
-
-
-
     //NOTE asignando indices al verctor [(0),(1),(2),(3)...]
     for (var i = 0; i < totalCiudades; i++) {
-        orden[i] = i;
+        if (distrito[i] == "CHIMBOTE") {
+            ciudades[a] = createVector(longitudArray[i], latitudArray[i]);
+            orden[a] = a;
+            a = a + 1;
+        }
     }
+    totalCiudades = a;
 
     var d = CalcularDistancia(ciudades, orden);
     distanciaRecord = d;
     mejorOrden = orden.slice();
-    // permutacionesTotales = Factorial(totalCiudades);
+    permutacionesTotales = Factorial(totalCiudades);
 
 
 }
@@ -107,9 +85,9 @@ async function draw() {
 function CalcularMejorOrden() {
 
     var d = CalcularDistancia(ciudades, orden);
-    //if (d == distanciaRecord && c > 0) {
-    //  console.log("Uno de los mejores recorridos es : " + orden);
-    // }
+    if (d == distanciaRecord && c > 0) {
+        console.log("Uno de los mejores recorridos es : " + orden);
+    }
     if (d < distanciaRecord) {
         distanciaRecord = d;
         mejorOrden = orden.slice();

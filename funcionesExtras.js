@@ -39,7 +39,7 @@ function Swap(a, i, j) {
 function DibujarElipse() {
     fill(255);
     for (var i = 0; i < orden.length; i++) {
-        ellipse(ciudades[i].x, ciudades[i].y, 8, 8);
+        ellipse((ciudades[i].x) + 50, (ciudades[i].y) + 50, 8, 8);
     }
 }
 

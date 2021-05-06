@@ -1,5 +1,5 @@
 var ciudades = [];
-var totalCiudades = 4;
+var totalCiudades = 1;
 var distanciaRecord;
 var mejorOrden;
 var orden = [];
@@ -7,8 +7,10 @@ var permutacionesTotales = [];
 var contador = 0;
 var c = 0;
 
-var longi_tud = [];
-var lati_tud = [];
+var longitudArray = [];
+var latitudArray = [];
+var distrito = "";
+
 
 async function readable() {
 
@@ -16,34 +18,61 @@ async function readable() {
     const data = await response.text();
     const rows = data.split('\n').slice(1);
     rows.forEach(elt => {
-        const row = elt.split(';');
-        const centropoblado = row[0];
-        const longitud = row[4];
-        const lati = row[5];
-        longi_tud.push(longitud);
-        lati_tud.push(lati);
+        const row = elt.split(',');
+
+        const _distrito = row[2];
+        const _longitudString = row[4];
+        const _latitudString = row[5];
+
+
+        var longitudInt = parseFloat(_longitudString);
+        var latitudInt = parseFloat(_latitudString);
+        var distr = String(_distrito);
+
+        longitudArray.push(longitudInt);
+        latitudArray.push(latitudInt);
+        console.log(_distrito);
+        distrito = _distrito;
+
+
+
+
 
     })
+    console.log("sdasder");
+    totalCiudades = longitudArray.length;
 
 }
 
 
 
 
-function setup() {
-    readable();
+async function setup() {
+
+
+    await readable();
+
 
     createCanvas(800, 800);
     // NOTE asignando ciudades
-    var pedregalBajo = createVector(-4.882495, -80.385018);
-    var narihuala = createVector(-5.291134, -80.687515);
-    var sacobsa = createVector(15, 20);
-    var bellavista = createVector(105, 200);
+    /* var pedregalBajo = createVector(-4.882495, -80.385018);
+     var narihuala = createVector(-5.291134, -80.687515);
+     var sacobsa = createVector(-4.582495, -81.193093);
+     var bellavista = createVector(-5.44035, -80.754966);
 
-    ciudades[0] = pedregalBajo;
-    ciudades[1] = narihuala;
-    ciudades[2] = sacobsa;
-    ciudades[3] = bellavista;
+     ciudades[0] = pedregalBajo;
+     ciudades[1] = narihuala;
+     ciudades[2] = sacobsa;
+     ciudades[3] = bellavista;*/
+    for (var i = 0; i < totalCiudades; i++) {
+        ciudades[i] = createVector(longitudArray[i], latitudArray[i]);
+    }
+
+
+
+
+
+
 
     //NOTE asignando indices al verctor [(0),(1),(2),(3)...]
     for (var i = 0; i < totalCiudades; i++) {
@@ -53,15 +82,15 @@ function setup() {
     var d = CalcularDistancia(ciudades, orden);
     distanciaRecord = d;
     mejorOrden = orden.slice();
-    permutacionesTotales = Factorial(totalCiudades);
-    console.log(longi_tud);
-    console.log(lati_tud);
+    // permutacionesTotales = Factorial(totalCiudades);
+
 
 }
 
-function draw() {
+async function draw() {
 
-    //frameRate(1);
+
+
     background(0);
     DibujarElipse();
     DibujarLineas();
@@ -69,15 +98,18 @@ function draw() {
     SiguienteOrdenLexicografico();
     Porcentaje();
 
+    //frameRate(1);
+
+
 }
 
 
 function CalcularMejorOrden() {
 
     var d = CalcularDistancia(ciudades, orden);
-    if (d == distanciaRecord && c > 0) {
-        console.log("Uno de los mejores recorridos es : " + orden);
-    }
+    //if (d == distanciaRecord && c > 0) {
+    //  console.log("Uno de los mejores recorridos es : " + orden);
+    // }
     if (d < distanciaRecord) {
         distanciaRecord = d;
         mejorOrden = orden.slice();
@@ -102,6 +134,7 @@ function SiguienteOrdenLexicografico() {
         noLoop();
         console.log("Terminado Satisfactoriamente");
         ImprimirMejores(mejorOrden);
+        console.log(mejorOrden);
 
     }
 
